@@ -1,27 +1,12 @@
 package com.ecommerce.teamviewerecommerce.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Getter;
+
 import java.util.Date;
 
-public class ErrorDetails {
-    private Date timestamp;
-    private String message;
-    private String details;
-
-    public Date getTimestamp() {
-        return timestamp;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public String getDetails() {
-        return details;
-    }
-
-    public ErrorDetails(Date timestamp, String message, String details) {
-        this.timestamp = timestamp;
-        this.message = message;
-        this.details = details;
-    }
+@Schema(
+        description = "Error Details Information"
+)
+public record ErrorDetails(Date timestamp, String message, String details) {
 }

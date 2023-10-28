@@ -24,9 +24,9 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name ="id")
     public Long id;
-
-    @OneToMany(mappedBy = "order", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-    private List<OrderItem> orderItems;
+//
+//    @OneToMany(mappedBy = "order", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+//    private List<OrderItem> orderItems;
 
     @Column(name="total_Quantity")
     public int totalQuantity;

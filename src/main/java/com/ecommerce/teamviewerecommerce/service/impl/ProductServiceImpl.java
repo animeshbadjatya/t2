@@ -3,6 +3,7 @@ package com.ecommerce.teamviewerecommerce.service.impl;
 import com.ecommerce.teamviewerecommerce.dto.ProductDto;
 import com.ecommerce.teamviewerecommerce.dto.ProductResponse;
 import com.ecommerce.teamviewerecommerce.entity.Product;
+import com.ecommerce.teamviewerecommerce.exception.APIException;
 import com.ecommerce.teamviewerecommerce.exception.ResourceNotFoundException;
 import com.ecommerce.teamviewerecommerce.repository.ProductRepository;
 import com.ecommerce.teamviewerecommerce.service.ProductService;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,35 +31,21 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDto createPost(ProductDto productDto) {
-        // Convert DTO to entity
-        System.out.println( "Here in PostService Impl" + productDto.toString());
-        Product product = new Product();
-     //   product.setId(product.getId());
-        product.setName(productDto.getName());
-        product.setSku(productDto.getSku());
-        product.setDescription(productDto.getDescription());
-        product.setUnitPrice(productDto.getUnitPrice());
-        product.setUnitsInStock(productDto.getUnitsInStock());
-        product.setImageUrl(productDto.getImageUrl());
-        product.setActive(productDto.isActive());
+    public ProductDto createProduct(ProductDto productDto) {
+        System.out.println("Here in create Product" + productDto.getName());
+       List<Product> productNameList = productRepository.findByNameEquals(productDto.getName());
+       if(productNameList.isEmpty()) {
 
-        Product newProduct = productRepository.save(product);
+           // Convert DTO to entity
+           System.out.println("Here in PostService Impl" + productDto.toString());
+           Product product = mapper.map(productDto, Product.class);
 
-        // convert Entity to DTO
-        ProductDto productResponse = new ProductDto();
-        productResponse.setId(newProduct.getId());
-        productResponse.setName(newProduct.getName());
-        productResponse.setSku(newProduct.getSku());
-        productResponse.setDescription(newProduct.getDescription());
-        productResponse.setUnitPrice(newProduct.getUnitPrice());
-        productResponse.setUnitsInStock(newProduct.getUnitsInStock());
-        productResponse.setImageUrl(newProduct.getImageUrl());
-        productResponse.setDateCreated(newProduct.getDateCreated());
-        productResponse.setLastUpdated(newProduct.getLastUpdated());
+           Product newProduct = productRepository.save(product);
 
-
-        return  productResponse;
+           return mapper.map(newProduct, ProductDto.class);
+       }else{
+               throw new APIException("Product", "Name", productDto.getName());
+           }
     }
 
     @Override
@@ -96,13 +84,6 @@ public class ProductServiceImpl implements ProductService {
         });
 
           Product  product1 = mapper.map(productDto, Product.class);
-//        product.setName(productDto.getName());
-//        product.setSku(productDto.getSku());
-//        product.setDescription(productDto.getDescription());
-//        product.setUnitPrice(productDto.getUnitPrice());
-//        product.setUnitsInStock(productDto.getUnitsInStock());
-//        product.setImageUrl(productDto.getImageUrl());
-//        product.setActive(productDto.isActive());
 
 
         Product updatedProduct = productRepository.save(product1);
@@ -120,16 +101,6 @@ public class ProductServiceImpl implements ProductService {
     // convert Entity to DTO
     private ProductDto mapToDTO(Product product){
          ProductDto productDto = mapper.map(product, ProductDto.class);
-//        ProductDto productResponse = new ProductDto();
-//        productResponse.setId(product.getId());
-//        productResponse.setName(product.getName());
-//        productResponse.setSku(product.getSku());
-//        productResponse.setDescription(product.getDescription());
-//        productResponse.setUnitPrice(product.getUnitPrice());
-//        productResponse.setUnitsInStock(product.getUnitsInStock());
-//        productResponse.setImageUrl(product.getImageUrl());
-//        productResponse.setDateCreated(product.getDateCreated());
-//        productResponse.setLastUpdated(product.getLastUpdated());
         return productDto;
     }
 }

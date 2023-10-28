@@ -18,8 +18,10 @@ import org.springframework.context.annotation.Bean;
 				summary = "A take home challenge from Teamviewer.",
 				contact = @Contact(
 						name = "Animesh Badjatya",
-						email = "badjatiya.animesh@gmail.com"
-				)
+						email = "badjatiya.animesh@gmail.com",
+						url = "#"
+				),
+				termsOfService = "Terms of Service"
 		),
 		externalDocs = @ExternalDocumentation(
 				description = " Teamviewer e-commerce App REST APIs Documentation"

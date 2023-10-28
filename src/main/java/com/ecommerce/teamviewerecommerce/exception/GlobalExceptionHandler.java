@@ -17,6 +17,11 @@ public class GlobalExceptionHandler {
     ErrorDetails errorDetails = new ErrorDetails(new Date(), resourceNotFoundException.getMessage(), webRequest.getDescription(false));
     return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
     }
+    @ExceptionHandler(APIException.class)
+    public ResponseEntity<ErrorDetails> handleAPIException(APIException apiException, WebRequest webRequest){
+        ErrorDetails errorDetails = new ErrorDetails(new Date(), apiException.getMessage(), webRequest.getDescription(false));
+        return new ResponseEntity<>(errorDetails, HttpStatus.CONFLICT);
+    }
 
     // Add Product Not Found exception
 

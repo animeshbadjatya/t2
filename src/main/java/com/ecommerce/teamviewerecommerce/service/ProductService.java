@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface ProductService {
 
-    ProductDto createPost(ProductDto productDto);
+    ProductDto createProduct(ProductDto productDto);
 
     ProductResponse getAllProducts(int pageNo, int pageSize);
 
