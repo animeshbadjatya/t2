@@ -8,6 +8,7 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
@@ -43,8 +44,8 @@ public class Product {
     @Column(name= "units_in_stock", nullable = false)
     private int unitsInStock;
 
-    @OneToMany(mappedBy = "productId", cascade = CascadeType.ALL,orphanRemoval = true ) //{ CascadeType.PERSIST, CascadeType.MERGE } // Changed Mapping from Product to ProductID
-    private Set<OrderItem> orderItems = new HashSet<>(); // this can be a list as well rather than HashSet, depends on implementation
+//    @OneToMany(mappedBy = "productId", cascade = CascadeType.ALL,orphanRemoval = true ) //{ CascadeType.PERSIST, CascadeType.MERGE } // Changed Mapping from Product to ProductID
+//    private List<OrderItem> orderItems; // this can be a list as well rather than HashSet, depends on implementation
 
 
     @Column(name="date_created")

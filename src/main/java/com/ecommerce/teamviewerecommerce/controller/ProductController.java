@@ -37,6 +37,10 @@ public class ProductController {
                     @ApiResponse(
                             responseCode = "201",
                             description = "Http Status 201 created."
+                    ),
+                    @ApiResponse(
+                            responseCode = "409",
+                            description = "Product with the same Name already exists."
                     )
             }
     )

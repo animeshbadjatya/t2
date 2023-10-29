@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,8 +34,8 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductDto createProduct(ProductDto productDto) {
         System.out.println("Here in create Product" + productDto.getName());
-       List<Product> productNameList = productRepository.findByNameEquals(productDto.getName());
-       if(productNameList.isEmpty()) {
+       Optional<Product> productName = productRepository.findByNameEquals(productDto.getName());
+       if(productName.isEmpty()) {
 
            // Convert DTO to entity
            System.out.println("Here in PostService Impl" + productDto.toString());

@@ -1,0 +1,26 @@
+version: "3.8"
+
+services:
+  postgresDB:
+    container_name: postgresDB
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD : postgres
+      POSTGRES_DB: test
+
+  teamviewer-ecommerce-application:
+    container_name: teamviewer-ecommerce
+    build:
+      context: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      -postgresDB:
+         condition: service_started
+    networks:
+      application-postgres-net:
+    restart: on-failure
+
+networks:
+  application-postgres-net:
