@@ -1,9 +1,8 @@
 package com.ecommerce.teamviewerecommerce.service;
 
-import com.ecommerce.teamviewerecommerce.dto.OrderDto;
-import com.ecommerce.teamviewerecommerce.dto.OrderRequest;
-import com.ecommerce.teamviewerecommerce.dto.OrderResponse;
-import com.ecommerce.teamviewerecommerce.dto.OrderUpdateRequest;
+import com.ecommerce.teamviewerecommerce.payload.OrderDto;
+import com.ecommerce.teamviewerecommerce.payload.OrderResponse;
+import com.ecommerce.teamviewerecommerce.payload.OrderUpdateRequest;
 
 public interface OrderService {
 

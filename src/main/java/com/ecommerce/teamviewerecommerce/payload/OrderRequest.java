@@ -1,4 +1,4 @@
-package com.ecommerce.teamviewerecommerce.dto;
+package com.ecommerce.teamviewerecommerce.payload;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 

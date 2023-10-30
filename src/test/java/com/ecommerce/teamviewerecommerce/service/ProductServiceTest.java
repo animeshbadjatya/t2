@@ -1,8 +1,8 @@
 //package com.ecommerce.teamviewerecommerce.service;
 //
 //import ch.qos.logback.core.net.SyslogOutputStream;
-//import com.ecommerce.teamviewerecommerce.dto.ProductDto;
-//import com.ecommerce.teamviewerecommerce.dto.ProductResponse;
+//import com.ecommerce.teamviewerecommerce.payload.ProductDto;
+//import com.ecommerce.teamviewerecommerce.payload.ProductResponse;
 //import com.ecommerce.teamviewerecommerce.entity.Product;
 //import com.ecommerce.teamviewerecommerce.exception.ResourceNotFoundException;
 //import com.ecommerce.teamviewerecommerce.repository.ProductRepository;

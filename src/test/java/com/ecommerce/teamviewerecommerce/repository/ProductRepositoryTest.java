@@ -50,7 +50,6 @@ public class ProductRepositoryTest {
         Product secondProduct = new Product();
         secondProduct.setId(880L);
         secondProduct.setImageUrl("assets/images/products/test.png");
-//        secondProduct.setActive(true);
         secondProduct.setName("TestingName");
         secondProduct.setUnitsInStock(100);
 

@@ -11,7 +11,6 @@ import lombok.Setter;
 
 @Setter
 @Getter
-
 @Entity
 @Table(name="products")
 public class Product {
@@ -22,10 +21,10 @@ public class Product {
 	@Column(unique = true, nullable = false)
 	private String name;
 
-	@Column(name= "description", nullable = false)
+	@Column(name= "description")
 	private String description;
 
-	@Column(name= "unit_price", nullable = false)
+	@Column(name= "unit_price")
 	private Double unitPrice;
 
 	@Column(name = "image_url")

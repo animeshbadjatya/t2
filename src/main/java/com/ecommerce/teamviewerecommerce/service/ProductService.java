@@ -1,9 +1,7 @@
 package com.ecommerce.teamviewerecommerce.service;
 
-import com.ecommerce.teamviewerecommerce.dto.ProductDto;
-import com.ecommerce.teamviewerecommerce.dto.ProductResponse;
-
-import java.util.List;
+import com.ecommerce.teamviewerecommerce.payload.ProductDto;
+import com.ecommerce.teamviewerecommerce.payload.ProductResponse;
 
 public interface ProductService {
 

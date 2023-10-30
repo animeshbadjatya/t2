@@ -1,13 +1,13 @@
 package com.ecommerce.teamviewerecommerce.controller;
 
+import com.google.gson.Gson;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.ecommerce.teamviewerecommerce.dto.OrderDto;
-import com.ecommerce.teamviewerecommerce.dto.OrderRequest;
-import com.ecommerce.teamviewerecommerce.dto.OrderResponse;
-import com.ecommerce.teamviewerecommerce.dto.OrderUpdateRequest;
+import com.ecommerce.teamviewerecommerce.payload.OrderDto;
+import com.ecommerce.teamviewerecommerce.payload.OrderResponse;
+import com.ecommerce.teamviewerecommerce.payload.OrderUpdateRequest;
 import com.ecommerce.teamviewerecommerce.service.OrderService;
 import com.ecommerce.teamviewerecommerce.utils.AppConstants;
 
@@ -74,6 +74,14 @@ public class OrderController {
                     @ApiResponse(
                             responseCode = "200",
                             description = "This API returns the Order with the specified ID"
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "This API returns 404, if a Product is not found"
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "This API returns 400, if inventory of the product is than requested"
                     )
             }
     )
@@ -111,7 +119,7 @@ public class OrderController {
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteOrderById( @PathVariable(name ="id") long id){
         orderService.deleteOrderById(id);
-        return new ResponseEntity<>("Success", HttpStatus.OK);
+        return new ResponseEntity<>(new Gson().toJson("Success"), HttpStatus.OK);
     }
 	
 	

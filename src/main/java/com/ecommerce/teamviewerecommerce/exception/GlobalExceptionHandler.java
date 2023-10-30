@@ -1,6 +1,6 @@
 package com.ecommerce.teamviewerecommerce.exception;
 
-import com.ecommerce.teamviewerecommerce.dto.ErrorDetails;
+import com.ecommerce.teamviewerecommerce.payload.ErrorDetails;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;

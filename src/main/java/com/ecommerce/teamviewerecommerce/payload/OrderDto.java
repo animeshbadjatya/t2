@@ -1,17 +1,13 @@
-package com.ecommerce.teamviewerecommerce.dto;
+package com.ecommerce.teamviewerecommerce.payload;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Column;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -22,36 +18,34 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderDto {
-    private Long id;
 
+    @Schema(
+            description = "ID"
+    )
+    private Long id;
 
     @Schema(
             description = "List of Products to Order"
     )
     private List<OrderItemDto> orderItems;
-    @Schema(
-            description = "Total Quantity of Order"
-    )
-    @NotEmpty
-    public int totalQuantity;
 
     @Schema(
             description = "Total Amount of Order"
     )
-    @NotEmpty
     private Double totalAmount;
 
     @Schema(
             description = "Customer ID for the Order"
     )
-    @NotEmpty
+    @Min(value = 0L, message = "The customerId must be positive")
     public Long customerId;
 
     @Schema(
             description = "Billing Address of Order"
     )
-    @NotEmpty
+    @Size(min =5, message = "Billing address should have at least 5 characters")
     public String billingAddress;
+
     @Schema(
             description = "Order Status - Placed, in Cart or Pending"
     )
@@ -60,11 +54,9 @@ public class OrderDto {
     @Schema(
             description = "Order Creation Date"
     )
-    @NotEmpty
     private Date dateCreated;
     @Schema(
             description = "Order Update Date"
     )
-    @NotEmpty
     private Date lastUpdated;
 }

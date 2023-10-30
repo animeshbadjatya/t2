@@ -1,7 +1,7 @@
 package com.ecommerce.teamviewerecommerce.service.impl;
 
-import com.ecommerce.teamviewerecommerce.dto.ProductDto;
-import com.ecommerce.teamviewerecommerce.dto.ProductResponse;
+import com.ecommerce.teamviewerecommerce.payload.ProductDto;
+import com.ecommerce.teamviewerecommerce.payload.ProductResponse;
 import com.ecommerce.teamviewerecommerce.entity.Product;
 import com.ecommerce.teamviewerecommerce.exception.APIException;
 import com.ecommerce.teamviewerecommerce.exception.ResourceNotFoundException;
@@ -14,7 +14,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -33,18 +32,15 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDto createProduct(ProductDto productDto) {
-        System.out.println("Here in create Product" + productDto.getName());
-       Optional<Product> productName = productRepository.findByNameEquals(productDto.getName());
-       if(productName.isPresent())
+       Optional<Product> existingProduct = productRepository.findByNameEquals(productDto.getName());
+       if(existingProduct.isPresent())
            throw new APIException("ProductName already exists");
 
-           // Convert DTO to entity
-      //     System.out.println("Here in PostService Impl" + productDto.toString());
-           Product product = mapper.map(productDto, Product.class);
+       Product newProduct = mapper.map(productDto, Product.class);
+       Product savedProduct = productRepository.save(newProduct);
+        productDto.setId(savedProduct.getId());
 
-           Product newProduct = productRepository.save(product);
-
-           return mapper.map(newProduct, ProductDto.class);
+       return mapper.map(savedProduct, ProductDto.class);
     }
 
     @Override
@@ -78,14 +74,19 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDto updateProductById(ProductDto productDto, Long id) {
-        Product product = productRepository.findById(id).orElseThrow(() -> {
-            return new ResourceNotFoundException("Product", "id", id);
-        });
+        Optional<Product> product = productRepository.findById(id);
+        if(product.isEmpty()) throw new ResourceNotFoundException("Product", "id", id);
 
-          Product  product1 = mapper.map(productDto, Product.class);
-
-
-        Product updatedProduct = productRepository.save(product1);
+        System.out.println(product.toString());
+        System.out.println(" productDto"+ productDto.toString());
+        Product dbProduct  = product.get();
+        Product updateProduct = mapper.map(productDto, Product.class);
+        updateProduct.setId(dbProduct.getId());
+        updateProduct.setDescription(dbProduct.getDescription());
+        updateProduct.setName(dbProduct.getName());
+        updateProduct.setUnitPrice(dbProduct.getUnitPrice());
+        updateProduct.setUnitsInStock(dbProduct.getUnitsInStock());
+        Product updatedProduct = productRepository.save(updateProduct);
         return mapToDTO(updatedProduct);
     }
 

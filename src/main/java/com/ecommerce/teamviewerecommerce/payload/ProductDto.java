@@ -1,14 +1,8 @@
-package com.ecommerce.teamviewerecommerce.dto;
+package com.ecommerce.teamviewerecommerce.payload;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Column;
 import jakarta.validation.constraints.*;
 import lombok.Data;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
-import java.math.BigDecimal;
-import java.util.Date;
 
 @Schema(
         description = "ProductDto Model Information"
@@ -16,6 +10,10 @@ import java.util.Date;
 @Data
 public class ProductDto {
 
+    @Schema(
+            description = "Id"
+    )
+    private Long Id;
     @Schema(
             description = "Product Name"
     )

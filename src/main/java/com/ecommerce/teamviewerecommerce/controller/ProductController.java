@@ -1,20 +1,21 @@
 package com.ecommerce.teamviewerecommerce.controller;
 
-import com.ecommerce.teamviewerecommerce.dto.ProductDto;
-import com.ecommerce.teamviewerecommerce.dto.ProductResponse;
-import com.ecommerce.teamviewerecommerce.entity.Product;
+import com.ecommerce.teamviewerecommerce.payload.ProductDto;
+import com.ecommerce.teamviewerecommerce.payload.ProductResponse;
 import com.ecommerce.teamviewerecommerce.service.ProductService;
 import com.ecommerce.teamviewerecommerce.utils.AppConstants;
+import com.google.gson.Gson;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.apache.tomcat.util.json.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import static com.jayway.jsonpath.internal.function.ParamType.JSON;
 
 @Tag(
         name = "CRUD REST APIs for Products"
@@ -24,7 +25,6 @@ import java.util.List;
 @RequestMapping("/api/products")
 public class ProductController {
 
-    @Autowired // Can be removed
     private ProductService productService;
 
     public ProductController(ProductService productService){
@@ -39,12 +39,15 @@ public class ProductController {
                     @ApiResponse(
                             responseCode = "201",
                             description = "Http Status 201 created."
+                    ),
+                    @ApiResponse(
+                            responseCode = "409",
+                            description = "Http Status 409 Conflict."
                     )
             }
     )
     @PostMapping
     public ResponseEntity<ProductDto> createProduct(@Valid @RequestBody ProductDto productDto){
-        System.out.println("In controller " + productDto.toString());
         return new ResponseEntity<>(productService.createProduct(productDto),HttpStatus.CREATED);
     }
 
@@ -89,6 +92,10 @@ public class ProductController {
                     @ApiResponse(
                             responseCode = "200",
                             description = "This API returns the updated Products with the specified ID"
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "This API failed to find the Product to update"
                     )
             }
     )
@@ -116,6 +123,6 @@ public class ProductController {
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteProductById( @PathVariable(name ="id") long id){
         productService.deleteProductById(id);
-        return new ResponseEntity<>("Success", HttpStatus.OK);
+        return new ResponseEntity<>( new Gson().toJson("Success"), HttpStatus.OK);
     }
 }

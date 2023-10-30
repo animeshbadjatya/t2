@@ -1,9 +1,10 @@
 package com.ecommerce.teamviewerecommerce.service.impl;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
-import com.ecommerce.teamviewerecommerce.dto.*;
+import com.ecommerce.teamviewerecommerce.payload.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -25,31 +26,40 @@ import jakarta.transaction.Transactional;
 
 @Service
 public class OrderServiceImpl implements OrderService {
-	@Autowired
+
 	private ProductRepository productRepository;
-	@Autowired
+
 	private OrderRepository orderRepository;
-	@Autowired
+
 	private OrderItemRepository orderItemRepository;
-	@Autowired
+
 	private ModelMapper mapper;
+
+	public OrderServiceImpl(OrderItemRepository orderItemRepository, ProductRepository productRepository, OrderRepository orderRepository, ModelMapper mapper) {
+		this.orderItemRepository = orderItemRepository;
+		this.productRepository = productRepository;
+		this.orderRepository = orderRepository;
+		this.mapper = mapper;
+	}
 
 	@Override
 	@Transactional
 	public OrderDto placeOrder(OrderDto orderDto) {
+		System.out.println( " 324" + orderDto.toString());
 		OrderResponse orderResponse = new OrderResponse();
 		int totalAmount = 0;
-		int totalQuantity = 0;
 
 		for (OrderItemDto orderItem : orderDto.getOrderItems()) {
+
+			// Checking if the product is in the Products table
 			Product product = productRepository.findById(orderItem.getProductId())
 					.orElseThrow(() -> new ResourceNotFoundException("Product", "id", orderItem.getProductId()));
 			if (product.getUnitsInStock() < orderItem.getQuantity()) {
-				throw new APIException("requested quantity of + " + product.getName() + "+is not available in stock");
+				throw new APIException("requested quantity of  " + product.getName() + "is not available in stock");
 			}
-			totalAmount += product.getUnitPrice();
-			totalQuantity += orderItem.getQuantity();
+			totalAmount += product.getUnitPrice();;
 		}
+
 
 		// Create an order
 		Order order = new Order();
@@ -58,7 +68,6 @@ public class OrderServiceImpl implements OrderService {
 		order.setStatus("placed");
 		order.setCustomerId(orderDto.getCustomerId());
 		order.setBillingAddress(orderDto.getBillingAddress());
-		//order.setTotalAmount(totalAmount);
 		// Save the order
 		order = orderRepository.save(order);
 
@@ -66,7 +75,7 @@ public class OrderServiceImpl implements OrderService {
 			Product product = productRepository.findById(orderItem.getProductId())
 					.orElseThrow(() -> new ResourceNotFoundException("Product", "id", orderItem.getProductId()));
 
-			// Create an order product
+			// Create an orderItems
 			OrderItem saveorderItem = new OrderItem();
 			saveorderItem.setProduct(product);
 			saveorderItem.setOrder(order);

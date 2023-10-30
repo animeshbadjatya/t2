@@ -9,7 +9,7 @@ import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import com.ecommerce.teamviewerecommerce.dto.OrderItemDto;
+import com.ecommerce.teamviewerecommerce.payload.OrderItemDto;
 import com.ecommerce.teamviewerecommerce.entity.Order;
 import com.ecommerce.teamviewerecommerce.entity.OrderItem;
 import com.ecommerce.teamviewerecommerce.entity.Product;
@@ -46,19 +46,20 @@ public class OrderItemServiceImpl implements OrderItemService {
 		orderItem.setProduct(product);
 		Optional<Order> order = orderRepository.findById(orderItemDto.getOrderId());
 		if(order.isEmpty()){
-			throw new ResourceNotFoundException("Order", "id ",orderItemDto.getOrderId());
+			throw new ResourceNotFoundException("Order is not present in Orders table with ", "id ",orderItemDto.getOrderId());
 		}
 		else{
 			Double total = order.get().getTotalAmount();
 			total += product.getUnitPrice()* orderItemDto.getQuantity();
 			orderItem.setOrder(order.get());
+			// Setting the new total based on the OrderItem
+			//Setting the order again and saving in Order table.
 			Order updateOrder = new Order();
 			updateOrder.setId(order.get().getId());
 			updateOrder.setTotalAmount(total);
 			updateOrder.setStatus(order.get().getStatus());
 			updateOrder.setCustomerId(order.get().getCustomerId());
 			updateOrder.setBillingAddress(order.get().getBillingAddress());
-			//order.setTotalAmount(totalAmount);
 			// Save the order
 			orderRepository.save(updateOrder);
 
@@ -70,18 +71,6 @@ public class OrderItemServiceImpl implements OrderItemService {
 		return mapToDto(newOrderItem);
 	}
 
-	private OrderItemDto mapToDto(OrderItem orderItem) {
-		OrderItemDto orderItemDto = mapper.map(orderItem, OrderItemDto.class);
-		return orderItemDto;
-	}
-
-	private OrderItem mapToEntity(OrderItemDto orderItemDto) {
-		OrderItem orderItem = new OrderItem();
-		orderItem.setId(orderItemDto.getId());
-		orderItem.setQuantity(orderItemDto.getQuantity());
-		return orderItem;
-
-	}
 
 	@Override
 	public List<OrderItemDto> getAllOrderItems() {
@@ -123,6 +112,19 @@ public class OrderItemServiceImpl implements OrderItemService {
 			return new ResourceNotFoundException("Order", "id", id);
 		});
 		orderItemRepository.deleteById(id);
+
+	}
+
+	private OrderItemDto mapToDto(OrderItem orderItem) {
+		OrderItemDto orderItemDto = mapper.map(orderItem, OrderItemDto.class);
+		return orderItemDto;
+	}
+
+	private OrderItem mapToEntity(OrderItemDto orderItemDto) {
+		OrderItem orderItem = new OrderItem();
+		orderItem.setId(orderItemDto.getId());
+		orderItem.setQuantity(orderItemDto.getQuantity());
+		return orderItem;
 
 	}
 

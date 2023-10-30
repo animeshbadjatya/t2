@@ -22,7 +22,7 @@ import lombok.Setter;
 @Table(name="orders")
 public class Order {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	@OneToMany(mappedBy = "order")
 	private List<OrderItem> orderItems;

@@ -1,7 +1,6 @@
-package com.ecommerce.teamviewerecommerce.dto;
+package com.ecommerce.teamviewerecommerce.payload;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Getter;
 
 import java.util.Date;
 

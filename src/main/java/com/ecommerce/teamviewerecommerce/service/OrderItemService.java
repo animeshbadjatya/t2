@@ -2,7 +2,7 @@ package com.ecommerce.teamviewerecommerce.service;
 
 import java.util.List;
 
-import com.ecommerce.teamviewerecommerce.dto.OrderItemDto;
+import com.ecommerce.teamviewerecommerce.payload.OrderItemDto;
 
 public interface OrderItemService {
 
