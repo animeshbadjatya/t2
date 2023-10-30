@@ -35,18 +35,16 @@ public class ProductServiceImpl implements ProductService {
     public ProductDto createProduct(ProductDto productDto) {
         System.out.println("Here in create Product" + productDto.getName());
        Optional<Product> productName = productRepository.findByNameEquals(productDto.getName());
-       if(productName.isEmpty()) {
+       if(productName.isPresent())
+           throw new APIException("ProductName already exists");
 
            // Convert DTO to entity
-           System.out.println("Here in PostService Impl" + productDto.toString());
+      //     System.out.println("Here in PostService Impl" + productDto.toString());
            Product product = mapper.map(productDto, Product.class);
 
            Product newProduct = productRepository.save(product);
 
            return mapper.map(newProduct, ProductDto.class);
-       }else{
-               throw new APIException("Product", "Name", productDto.getName());
-           }
     }
 
     @Override

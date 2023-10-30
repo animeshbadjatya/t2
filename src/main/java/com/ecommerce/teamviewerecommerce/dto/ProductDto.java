@@ -2,8 +2,7 @@ package com.ecommerce.teamviewerecommerce.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -17,7 +16,6 @@ import java.util.Date;
 @Data
 public class ProductDto {
 
-    private Long id;
     @Schema(
             description = "Product Name"
     )
@@ -35,29 +33,18 @@ public class ProductDto {
     @Schema(
             description = "Product Price"
     )
-    @NotEmpty
-    private BigDecimal unitPrice;
+    @Min(value = 0L, message = "The unitPrice must be positive")
+    private Double unitPrice;
+
     @Schema(
             description = "Product Image Url"
     )
     private String imageUrl;
-    @Schema(
-            description = "Is Product Listing Active"
-    )
-    @NotEmpty
-    private boolean active;
+
 
     @Schema(
             description = "Product Units"
     )
-    @NotEmpty
+    @Min(value = 0L, message = "The unitsInStock must be positive")
     private int unitsInStock;
-    @Schema(
-            description = "Product Creation Date"
-    )
-    private Date dateCreated;
-    @Schema(
-            description = "Product Update Date"
-    )
-    private Date lastUpdated;
 }

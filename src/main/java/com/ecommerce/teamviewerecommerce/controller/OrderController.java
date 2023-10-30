@@ -1,20 +1,26 @@
 package com.ecommerce.teamviewerecommerce.controller;
 
-import com.ecommerce.teamviewerecommerce.dto.OrderDto;
-import com.ecommerce.teamviewerecommerce.dto.OrderResponse;
-import com.ecommerce.teamviewerecommerce.service.OrderService;
-import com.ecommerce.teamviewerecommerce.utils.AppConstants;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import com.ecommerce.teamviewerecommerce.dto.OrderDto;
+import com.ecommerce.teamviewerecommerce.dto.OrderRequest;
+import com.ecommerce.teamviewerecommerce.dto.OrderResponse;
+import com.ecommerce.teamviewerecommerce.dto.OrderUpdateRequest;
+import com.ecommerce.teamviewerecommerce.service.OrderService;
+import com.ecommerce.teamviewerecommerce.utils.AppConstants;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @Tag(
         name = "CRUD REST APIs for Orders"
 )
 @RestController
+
+@CrossOrigin(origins = "http://localhost:8080")
 @RequestMapping("/api/orders")
 public class OrderController {
 
@@ -36,9 +42,9 @@ public class OrderController {
     )
 
     @PostMapping
-    public ResponseEntity<OrderDto> createOrder(@RequestBody OrderDto orderDto){
-
-        return new ResponseEntity<>(orderService.createOrder(orderDto), HttpStatus.CREATED);
+    public ResponseEntity<OrderDto> placeOrder(@RequestBody OrderDto orderDto) {
+    	OrderDto order = orderService.placeOrder(orderDto);
+        return new ResponseEntity<>(order, HttpStatus.CREATED);
     }
 
     @Operation(
@@ -87,8 +93,8 @@ public class OrderController {
             }
     )
     @PutMapping("/{id}")
-    public ResponseEntity<OrderDto> updateOrderById(@RequestBody OrderDto orderDto, @PathVariable(name ="id") long id){
-        OrderDto orderResponse = orderService.updateOrderById(orderDto,id);
+    public ResponseEntity<OrderDto> updateOrderById(@RequestBody OrderUpdateRequest orderUpdateRequest, @PathVariable(name ="id") long id){
+        OrderDto orderResponse = orderService.updateOrderById(orderUpdateRequest,id);
         return new ResponseEntity<>(orderResponse, HttpStatus.OK);
     }
 
@@ -107,4 +113,6 @@ public class OrderController {
         orderService.deleteOrderById(id);
         return new ResponseEntity<>("Success", HttpStatus.OK);
     }
+	
+	
 }

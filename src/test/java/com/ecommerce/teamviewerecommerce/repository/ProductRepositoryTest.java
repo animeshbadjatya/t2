@@ -24,9 +24,10 @@ public class ProductRepositoryTest {
         product = new Product();
         product.setId(888L);
         product.setImageUrl("assets/images/products/test.png");
-        product.setActive(true);
         product.setName("TestName123");
+        product.setDescription("Product description");
         product.setUnitsInStock(100);
+        product.setUnitPrice(9.99);
     }
 
     //JUnit test for save product operation
@@ -47,10 +48,10 @@ public class ProductRepositoryTest {
 
 
         Product secondProduct = new Product();
-        secondProduct.setId(888L);
+        secondProduct.setId(880L);
         secondProduct.setImageUrl("assets/images/products/test.png");
-        secondProduct.setActive(true);
-        secondProduct.setName("TestName123");
+//        secondProduct.setActive(true);
+        secondProduct.setName("TestingName");
         secondProduct.setUnitsInStock(100);
 
 
@@ -71,7 +72,6 @@ public class ProductRepositoryTest {
         Product savedProduct = productRepository.save(product);
 
         Product productDb = productRepository.findById(savedProduct.getId()).get();
-
         assertThat(productDb).isNotNull();
     }
 

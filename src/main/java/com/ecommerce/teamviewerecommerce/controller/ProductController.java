@@ -8,6 +8,7 @@ import com.ecommerce.teamviewerecommerce.utils.AppConstants;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,8 @@ import java.util.List;
         name = "CRUD REST APIs for Products"
 )
 @RestController
-@RequestMapping("/api/product")
+@CrossOrigin(origins = "http://localhost:8080")
+@RequestMapping("/api/products")
 public class ProductController {
 
     @Autowired // Can be removed
@@ -37,15 +39,11 @@ public class ProductController {
                     @ApiResponse(
                             responseCode = "201",
                             description = "Http Status 201 created."
-                    ),
-                    @ApiResponse(
-                            responseCode = "409",
-                            description = "Product with the same Name already exists."
                     )
             }
     )
     @PostMapping
-    public ResponseEntity<ProductDto> createProduct(@RequestBody ProductDto productDto){
+    public ResponseEntity<ProductDto> createProduct(@Valid @RequestBody ProductDto productDto){
         System.out.println("In controller " + productDto.toString());
         return new ResponseEntity<>(productService.createProduct(productDto),HttpStatus.CREATED);
     }
@@ -96,7 +94,7 @@ public class ProductController {
     )
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProductDto> updateProductById(@RequestBody ProductDto productDto, @PathVariable(name ="id") long id){
+    public ResponseEntity<ProductDto> updateProductById( @Valid @RequestBody ProductDto productDto, @PathVariable(name ="id") long id){
         ProductDto productResponse = productService.updateProductById(productDto,id);
         return new ResponseEntity<>(productResponse, HttpStatus.OK);
     }

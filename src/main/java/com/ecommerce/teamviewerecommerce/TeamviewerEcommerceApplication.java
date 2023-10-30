@@ -1,13 +1,15 @@
 package com.ecommerce.teamviewerecommerce;
 
-import io.swagger.v3.oas.annotations.ExternalDocumentation;
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
-import io.swagger.v3.oas.annotations.info.Contact;
-import io.swagger.v3.oas.annotations.info.Info;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+
+import io.swagger.v3.oas.annotations.ExternalDocumentation;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.info.Contact;
+import io.swagger.v3.oas.annotations.info.Info;
 
 @SpringBootApplication
 @OpenAPIDefinition(
@@ -15,7 +17,7 @@ import org.springframework.context.annotation.Bean;
 				title = "Teamviewer E-commerce App REST APIs",
 				description = "E-commerce App REST APIs Documentation",
 				version = "v1",
-				summary = "A take home challenge from Teamviewer.",
+			//	summary = "A take home challenge from Teamviewer.",
 				contact = @Contact(
 						name = "Animesh Badjatya",
 						email = "badjatiya.animesh@gmail.com",

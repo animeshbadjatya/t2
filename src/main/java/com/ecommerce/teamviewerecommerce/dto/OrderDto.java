@@ -25,10 +25,10 @@ public class OrderDto {
     private Long id;
 
 
-//    @Schema(
-//            description = "List of Products to Order"
-//    )
-//    private List<OrderItemDto> orderItems;
+    @Schema(
+            description = "List of Products to Order"
+    )
+    private List<OrderItemDto> orderItems;
     @Schema(
             description = "Total Quantity of Order"
     )
@@ -36,10 +36,10 @@ public class OrderDto {
     public int totalQuantity;
 
     @Schema(
-            description = "Total Price of Order"
+            description = "Total Amount of Order"
     )
     @NotEmpty
-    private BigDecimal totalPrice;
+    private Double totalAmount;
 
     @Schema(
             description = "Customer ID for the Order"
