@@ -1,10 +1,10 @@
 package com.ecommerce.teamviewerecommerce.service.impl;
 
 import com.ecommerce.teamviewerecommerce.payload.ProductDto;
-import com.ecommerce.teamviewerecommerce.payload.ProductResponse;
 import com.ecommerce.teamviewerecommerce.entity.Product;
 import com.ecommerce.teamviewerecommerce.exception.APIException;
 import com.ecommerce.teamviewerecommerce.exception.ResourceNotFoundException;
+import com.ecommerce.teamviewerecommerce.payload.ProductResponse;
 import com.ecommerce.teamviewerecommerce.repository.ProductRepository;
 import com.ecommerce.teamviewerecommerce.service.ProductService;
 import org.modelmapper.ModelMapper;
@@ -24,7 +24,6 @@ public class ProductServiceImpl implements ProductService {
     private ModelMapper mapper;
     private ProductRepository productRepository;
 
-    @Autowired // We can omit this from Spring 3 onwards if the class has only once constructor
     public ProductServiceImpl(ProductRepository productRepository,  ModelMapper mapper) {
         this.productRepository = productRepository;
         this.mapper = mapper;
@@ -34,7 +33,7 @@ public class ProductServiceImpl implements ProductService {
     public ProductDto createProduct(ProductDto productDto) {
        Optional<Product> existingProduct = productRepository.findByNameEquals(productDto.getName());
        if(existingProduct.isPresent())
-           throw new APIException("ProductName already exists");
+           throw new APIException("Product already exists");
 
        Product newProduct = mapper.map(productDto, Product.class);
        Product savedProduct = productRepository.save(newProduct);
@@ -50,6 +49,9 @@ public class ProductServiceImpl implements ProductService {
         Pageable pageable = PageRequest.of(pageNo,pageSize);
 
         Page<Product> products = productRepository.findAll(pageable);
+        if(products.getTotalElements() == 0){
+            throw new APIException("No orders placed yet by the users");
+        }
 
         // Get content from Page object
         List<Product> listOfProducts = products.getContent();
@@ -65,7 +67,6 @@ public class ProductServiceImpl implements ProductService {
         productResponse.setLast(products.isLast());
         return productResponse;
     }
-
     @Override
     public ProductDto getProductById(Long id) {
         Product product = productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product", "id", id));

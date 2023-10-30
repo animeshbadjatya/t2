@@ -3,6 +3,9 @@ package com.ecommerce.teamviewerecommerce.repository;
 import com.ecommerce.teamviewerecommerce.entity.Order;
 import com.ecommerce.teamviewerecommerce.entity.OrderItem;
 import com.ecommerce.teamviewerecommerce.entity.Product;
+
+import com.ecommerce.teamviewerecommerce.payload.OrderItemDto;
+import org.aspectj.weaver.ast.Or;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,10 +13,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.springframework.test.web.servlet.result.StatusResultMatchersExtensionsKt.isEqualTo;
 
 @DataJpaTest
 public class OrderRepositoryTest {
@@ -24,20 +29,43 @@ public class OrderRepositoryTest {
     private Order order;
     private OrderItem orderItem;
     private OrderItem orderItem1;
+
+    @BeforeEach
+    public void setUp() {
+        order = new Order();
+        order.setId(1L);
+        order.setCustomerId(123L);
+        order.setBillingAddress("123 Main St, City, Country");
+        order.setStatus("Placed");
+        order.setTotalAmount(250.0);
+
+        List<OrderItem> orderItems = new ArrayList<>();
+
+        Product product1 = new Product();
+        product1.setId(1L);
+
+        Product product2 = new Product();
+        product2.setId(2L);
+
+
+        OrderItem orderItem1 = new OrderItem();
+        orderItem1.setProduct(product1);
+        orderItem1.setQuantity(2);
+
+        OrderItem orderItem2 = new OrderItem();
+        orderItem2.setProduct(product2);
+        orderItem2.setQuantity(3);
+
+        orderItems.add(orderItem1);
+        orderItems.add(orderItem2);
+
+        order.setOrderItems(orderItems);
+    }
+
     //JUnit test for save product operation
     @DisplayName("JUnit test to save Orders")
     @Test
-    public void givenOrderObject_whenSave_thenReturnSavedOrder(){
-
-        Order order = new Order();
-        order.setId(1L);
-        order.setBillingAddress("CA, USA");
-        order.setTotalAmount(10);
-//        orderItem.setOrder(1L);
-//        orderItem.setProduct(1L);
-//        orderItem1.setProduct(2L);
-//        orderItem1.setOrder(12L);
-
+    public void givenOrderObject_whenSave_thenReturnSavedOrder() {
 
         Order savedOrder = orderRepository.save(order);
 
@@ -45,108 +73,91 @@ public class OrderRepositoryTest {
         assertThat(savedOrder.getId()).isGreaterThan(0);
 
     }
-    @DataJpaTest
-    public class ProductRepositoryTest {
-        @Autowired
-        private ProductRepository productRepository;
 
-        private Product product;
-        @BeforeEach
-        public void setup(){
-            product = new Product();
-            product.setId(888L);
-            product.setImageUrl("assets/images/products/test.png");
-            product.setName("TestName123");
-            product.setDescription("Product description");
-            product.setUnitsInStock(100);
-            product.setUnitPrice(9.99);
-        }
+    @DisplayName("JUnit test for get all order operation")
+    @Test
+    public void givenOrderList_whenFindAll_thenReturnOrderList() {
 
-        //JUnit test for save product operation
-        @DisplayName("JUnit test for save product operation")
+
+        Order order2 = new Order();
+        order2.setId(2L);
+        order2.setCustomerId(123L);
+        order2.setBillingAddress("123 Main St, City, Country");
+        order2.setStatus("Placed");
+        order2.setTotalAmount(250.0);
+
+        List<OrderItem> orderItems = new ArrayList<>();
+
+        Product product1 = new Product();
+        product1.setId(1L);
+
+        Product product2 = new Product();
+        product2.setId(2L);
+
+
+        OrderItem orderItem1 = new OrderItem();
+        orderItem1.setProduct(product1);
+        orderItem1.setQuantity(2);
+
+        OrderItem orderItem2 = new OrderItem();
+        orderItem2.setProduct(product2);
+        orderItem2.setQuantity(3);
+
+        orderItems.add(orderItem1);
+        orderItems.add(orderItem2);
+
+        order2.setOrderItems(orderItems);
+
+
+        Order savedOrder1 = orderRepository.save(order);
+        Order savedOrder2 = orderRepository.save(order2);
+        ;
+
+        List<Order> orderList = orderRepository.findAll();
+
+        assertThat(orderList).isNotNull();
+        assertThat(orderList.size()).isEqualTo(2);
+
+    }
+
+    @DisplayName("JUnit test for get Order by ID operation")
+    @Test
+    public void givenOrderObject_whenFindById_thenReturnOrderObject() {
+
+        Order savedOrder = orderRepository.save(order);
+
+        Order orderDb = orderRepository.findById(savedOrder.getId()).get();
+        assertThat(orderDb).isNotNull();
+    }
+
+    @DisplayName("JUnit test for Update Order operation")
+    @Test
+    public void givenOrderObject_whenUpdated_thenReturnUpdatedOrder() {
+
+
+        Order savedOrder = orderRepository.save(order);
+
+        Order updateOrder = orderRepository.findById(savedOrder.getId()).get();
+        updateOrder.setBillingAddress("123 CA");
+
+        Order savedUpdatedOrder = orderRepository.save(updateOrder);
+
+        assertThat(savedUpdatedOrder.billingAddress).isEqualTo("123 CA");
+    }
+
+    @DisplayName("JUnit test for Delete Order operation")
         @Test
-        public void givenProductObject_whenSave_thenReturnSavedProduct(){
+        public void givenOrderObject_whenDeleted_thenRemoveOrder(){
 
-            Product savedProduct = productRepository.save(product);
+            Order savedOrder = orderRepository.save(order);
+            orderRepository.deleteById(order.getId());
 
-            assertThat(savedProduct).isNotNull();
-            assertThat(savedProduct.getId()).isGreaterThan(0);
+            Optional<Order> orderOptional = orderRepository.findById(order.getId());
 
-        }
-
-        @DisplayName("JUnit test for get all products operation")
-        @Test
-        public void givenProductList_whenFindAll_thenReturnProductList(){
-
-
-            Product secondProduct = new Product();
-            secondProduct.setId(880L);
-            secondProduct.setImageUrl("assets/images/products/test.png");
-            secondProduct.setName("TestingName");
-            secondProduct.setUnitsInStock(100);
-
-
-            Product savedFirstProduct = productRepository.save(product);
-            Product savedSecondProduct = productRepository.save(secondProduct);
-
-            List<Product> productList = productRepository.findAll();
-
-            assertThat(productList).isNotNull();
-            assertThat(productList.size()).isEqualTo(2);
-
-        }
-
-        @DisplayName("JUnit test for get product by ID operation")
-        @Test
-        public void givenProductObject_whenFindById_thenReturnProductObject(){
-
-            Product savedProduct = productRepository.save(product);
-
-            Product productDb = productRepository.findById(savedProduct.getId()).get();
-            assertThat(productDb).isNotNull();
-        }
-
-        @DisplayName("JUnit test for get product by Name operation")
-        @Test
-        public void givenProductObject_whenFindByName_thenReturnProductObject(){
-
-            Product savedProduct = productRepository.save(product);
-
-            Product productDb = productRepository.findByNameEquals(savedProduct.getName()).get();
-
-            assertThat(productDb.getName()).isEqualTo(product.getName());
-        }
-
-        @DisplayName("JUnit test for Update product operation")
-        @Test
-        public void givenProductObject_whenUpdated_thenReturnUpdatedProduct(){
-
-
-            Product savedProduct = productRepository.save(product);
-
-            Product updateProduct = productRepository.findById(savedProduct.getId()).get();
-            updateProduct.setUnitsInStock(21);
-            updateProduct.setDescription("This is test");
-
-            Product savedUpdatedProduct = productRepository.save(updateProduct);
-
-            assertThat(savedUpdatedProduct.getUnitsInStock()).isEqualTo(21);
-            assertThat(savedProduct.getDescription()).isEqualTo("This is test");
-        }
-
-        @DisplayName("JUnit test for Delete product operation")
-        @Test
-        public void givenProductObject_whenDeleted_thenRemoveProduct(){
-
-            Product savedProduct = productRepository.save(product);
-            productRepository.deleteById(product.getId());
-
-            Optional<Product> productOptional = productRepository.findById(product.getId());
-
-            assertThat(productOptional).isNotNull();
+            assertThat(orderOptional).isEmpty();
         }
 
 
     }
 
-}
+

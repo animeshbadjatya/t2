@@ -1,12 +1,10 @@
 package com.ecommerce.teamviewerecommerce.service.impl;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import com.ecommerce.teamviewerecommerce.payload.*;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -45,10 +43,10 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	@Transactional
 	public OrderDto placeOrder(OrderDto orderDto) {
-		System.out.println( " 324" + orderDto.toString());
-		OrderResponse orderResponse = new OrderResponse();
-		int totalAmount = 0;
 
+		OrderResponse pagedResponse = new OrderResponse();
+		int totalAmount = 0;
+		int totalQuantity = 0;
 		for (OrderItemDto orderItem : orderDto.getOrderItems()) {
 
 			// Checking if the product is in the Products table
@@ -58,30 +56,37 @@ public class OrderServiceImpl implements OrderService {
 				throw new APIException("requested quantity of  " + product.getName() + "is not available in stock");
 			}
 			totalAmount += product.getUnitPrice();;
+			totalQuantity += orderItem.getQuantity();
 		}
+		try {
 
+			// Create an order
+			Order order = new Order();
+			order.setId(orderDto.getId());
+			order.setTotalAmount(totalAmount);
+			order.setStatus("placed");
+			order.setCustomerId(orderDto.getCustomerId());
+			order.setBillingAddress(orderDto.getBillingAddress());
+			// Save the order
+			order = orderRepository.save(order);
 
-		// Create an order
-		Order order = new Order();
-		order.setId(orderDto.getId());
-		order.setTotalAmount(totalAmount);
-		order.setStatus("placed");
-		order.setCustomerId(orderDto.getCustomerId());
-		order.setBillingAddress(orderDto.getBillingAddress());
-		// Save the order
-		order = orderRepository.save(order);
+			for (OrderItemDto orderItem : orderDto.getOrderItems()) {
+				Product product = productRepository.findById(orderItem.getProductId())
+						.orElseThrow(() -> new ResourceNotFoundException("Product", "id", orderItem.getProductId()));
 
-		for (OrderItemDto orderItem : orderDto.getOrderItems()) {
-			Product product = productRepository.findById(orderItem.getProductId())
-					.orElseThrow(() -> new ResourceNotFoundException("Product", "id", orderItem.getProductId()));
+				// Create an orderItems
+				OrderItem saveorderItem = new OrderItem();
+				saveorderItem.setProduct(product);
+				saveorderItem.setOrder(order);
+				saveorderItem.setQuantity(orderItem.getQuantity());
 
-			// Create an orderItems
-			OrderItem saveorderItem = new OrderItem();
-			saveorderItem.setProduct(product);
-			saveorderItem.setOrder(order);
-			saveorderItem.setQuantity(orderItem.getQuantity());
+				orderItemRepository.save(saveorderItem);
 
-			orderItemRepository.save(saveorderItem);
+				product.setUnitsInStock(product.getUnitsInStock()-orderItem.getQuantity());
+				productRepository.save(product);
+			}
+		}catch (APIException e){
+			throw  new APIException("Error placing the order");
 		}
 		return orderDto;
 	}
@@ -91,9 +96,13 @@ public class OrderServiceImpl implements OrderService {
 		Pageable pageable = PageRequest.of(pageNo, pageSize);
 		Page<Order> orders = orderRepository.findAll(pageable);
 
-		OrderResponse orderResponse = getOrderResponse(orders);
+		if(orders.getTotalElements() == 0){
+			throw new APIException("No orders placed yet by the users");
+		}
 
-		return orderResponse;
+		OrderResponse pagedResponse = getOrderResponse(orders);
+
+		return pagedResponse;
 	}
 
 	private OrderResponse getOrderResponse(Page<Order> orders) {
@@ -102,14 +111,14 @@ public class OrderServiceImpl implements OrderService {
 
 		List<OrderDto> content = listOfProducts.stream().map(order -> mapToDTO(order)).collect(Collectors.toList());
 
-		OrderResponse orderResponse = new OrderResponse();
-		orderResponse.setContent(content);
-		orderResponse.setPageNo(orders.getNumber());
-		orderResponse.setPageSize(orders.getSize());
-		orderResponse.setTotalElements(orders.getTotalElements());
-		orderResponse.setTotalPages(orders.getTotalPages());
-		orderResponse.setLast(orders.isLast());
-		return orderResponse;
+		OrderResponse pagedResponse = new OrderResponse();
+		pagedResponse.setContent(content);
+		pagedResponse.setPageNo(orders.getNumber());
+		pagedResponse.setPageSize(orders.getSize());
+		pagedResponse.setTotalElements(orders.getTotalElements());
+		pagedResponse.setTotalPages(orders.getTotalPages());
+		pagedResponse.setLast(orders.isLast());
+		return pagedResponse;
 	}
 
 	private OrderDto mapToDTO(Order order) {

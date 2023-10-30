@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 @Schema(
-        description = "OrderResponse Information"
+        description = "Order Response Information"
 )
 @Data
 @AllArgsConstructor

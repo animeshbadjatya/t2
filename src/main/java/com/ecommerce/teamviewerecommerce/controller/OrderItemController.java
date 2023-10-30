@@ -2,6 +2,8 @@ package com.ecommerce.teamviewerecommerce.controller;
 
 import java.util.List;
 
+import com.ecommerce.teamviewerecommerce.payload.OrderItemResponse;
+import com.ecommerce.teamviewerecommerce.utils.AppConstants;
 import com.google.gson.Gson;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -53,8 +55,11 @@ public class OrderItemController {
 			}
 	)
 	@GetMapping
-	public ResponseEntity<List<OrderItemDto>> getAllOrderItem() {
-		List<OrderItemDto> orderItemDtoList = orderItemService.getAllOrderItems();
+	public ResponseEntity<OrderItemResponse> getAllOrderItem(
+			@RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
+			@RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize
+	) {
+		OrderItemResponse orderItemDtoList = orderItemService.getAllOrderItems(pageNo, pageSize);
 		return new ResponseEntity<>(orderItemDtoList, HttpStatus.CREATED);
 	}
 

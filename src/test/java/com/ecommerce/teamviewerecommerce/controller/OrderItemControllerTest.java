@@ -3,6 +3,7 @@ package com.ecommerce.teamviewerecommerce.controller;
 import com.ecommerce.teamviewerecommerce.payload.OrderItemDto;
 import com.ecommerce.teamviewerecommerce.service.OrderItemService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -45,104 +46,48 @@ public class OrderItemControllerTest {
     }
 
 
+    @DisplayName("JUnit test for Saving orderItem by ID operation")
     @Test
-    public void createOrderItem() {
-        System.out.println("hello");
+    public void givenOrderItem_whenSave_thenReturnOrderItem() {
         Mockito.when(orderItemService.createOrderItem(Mockito.any())).thenReturn(orderItemDto);
-        ResponseEntity result = orderItemController.createOrderItem(orderItemDto);
-//
+        ResponseEntity<OrderItemDto> result = orderItemController.createOrderItem(orderItemDto);
         Mockito.verify(orderItemService).createOrderItem(orderItemDto);
-        // Add assertions to compare the expected and actual results
         assertEquals(HttpStatus.CREATED, result.getStatusCode());
-        assertEquals(orderItemDto, result.getBody());
+        assertEquals(orderItemDto.getOrderId(), result.getBody().getOrderId());
     }
 
-//    @Test
-//    void getAllOrderItem() {
-//        OrderItemDto orderItemDto1;
-//        orderItemDto1 = new OrderItemDto();
-//        orderItemDto1.setId(888L);
-//        orderItemDto1.setProductId(1L);
-//        orderItemDto1.setOrderId(21L);
-//        orderItemDto1.setQuantity(2);
-//
-//        OrderItemDto orderItemDto2;
-//        orderItemDto2 = new OrderItemDto();
-//        orderItemDto2.setId(888L);
-//        orderItemDto2.setProductId(1L);
-//        orderItemDto2.setOrderId(21L);
-//        orderItemDto2.setQuantity(2);
-//        // Create a sample Page of OrderItemDto for the test
-//        List<OrderItemDto> orderItemDtoList = Arrays.asList(orderItemDto1,orderItemDto2);
-//        Page<OrderItemDto> orderItemDtoPage = new PageImpl<>(orderItemDtoList);
-//
-//        // Mock the behavior of orderItemService.getAllOrderItems
-//        Mockito.when(orderItemService.getAllOrderItems(Mockito.any())).thenReturn(orderItemDtoPage);
-//
-//        // Define a Pageable for pagination
-//        Pageable pageable = PageRequest.of(0, 10); // Page 1 with 10 items per page
-//
-//        // Call the method under test with pageable
-//        ResponseEntity result = orderItemController.getAllOrderItems(pageable);
-//
-//        // Verify that getAllOrderItems was called with the expected pageable
-//        Mockito.verify(orderItemService).getAllOrderItems(pageable);
-//
-//        // Add assertions to compare the expected and actual results
-//        assertEquals(HttpStatus.OK, result.getStatusCode());  // Replace with your expected status code
-//        assertEquals(orderItemDtoPage.getContent(), result.getBody());  // Replace with your expected response body
-//    }
-
+    @DisplayName("JUnit test for get orderItem by ID operation")
     @Test
-    void getOrderItemById() {
-// Create a sample OrderItemDto for the test
-        OrderItemDto orderItemDto = new OrderItemDto(/* Initialize with test data */);
+    void givenOrderItemId_whenFindById_thenReturnOrderItem() {
 
-        // Mock the behavior of orderItemService.getOrderItemById
+        OrderItemDto orderItemDto = new OrderItemDto();
         Mockito.when(orderItemService.getOrderItemById(Mockito.anyLong())).thenReturn(orderItemDto);
-
-        // Call the method under test with a specific ID
-        ResponseEntity<OrderItemDto> result = orderItemController.getOrderItemById(1L); // Replace 1L with the desired ID
-
-        // Verify that getOrderItemById was called with the expected ID
-        Mockito.verify(orderItemService).getOrderItemById(1L); // Replace 1L with the desired ID
-
-        // Add assertions to compare the expected and actual results
-        assertEquals(HttpStatus.OK, result.getStatusCode());  // Replace with your expected status code
-        assertEquals(orderItemDto, result.getBody());  // Replace with your expected response body
+        ResponseEntity<OrderItemDto> result = orderItemController.getOrderItemById(1L);
+        Mockito.verify(orderItemService).getOrderItemById(1L);
+        assertEquals(HttpStatus.OK, result.getStatusCode());
+        assertEquals(orderItemDto.getQuantity(), result.getBody().getQuantity());
     }
 
+
+    @DisplayName("JUnit test for get orderItem by ID operation")
     @Test
-    void updateOrderItemById() {
+    void givenOrderItem_whenFindById_thenReturnUpdatedOrderItem() {
         orderItemDto.setQuantity(5);
-
         Mockito.when(orderItemService.updateOrderItemById(orderItemDto)).thenReturn(orderItemDto);
-
-        // Call the method under test with the updated OrderItemDto
         ResponseEntity<OrderItemDto> updateOrderItemById = orderItemController.updateOrderItemById(orderItemDto);
-
-        // Verify that updateOrderItemById was called with the updated OrderItemDto
         Mockito.verify(orderItemService).updateOrderItemById(orderItemDto);
-        // Add assertions to compare the expected and actual results
-        assertEquals(HttpStatus.OK, updateOrderItemById.getStatusCode());  // Replace with your expected status code
-        assertEquals(orderItemDto, updateOrderItemById.getBody());  // Replace with your expected response body
+        assertEquals(HttpStatus.OK, updateOrderItemById.getStatusCode());
+        assertEquals(orderItemDto, updateOrderItemById.getBody());
     }
 
+    @DisplayName("JUnit test for Delete orderItem by ID operation")
     @Test
-    void deleteOrderItemById() {
+    void givenOrderItem_whenFindById_thenReturnSuccessMsg() {
 
-        // Mock the behavior of orderItemService.deleteOrderItemById
         Mockito.doNothing().when(orderItemService).deleteOrderItemById(Mockito.anyLong());
-
-        // Call the method under test with a specific ID
-        ResponseEntity result = orderItemController.deleteOrderItemById(1L); // Replace 1L with the desired ID
-
-        // Verify that deleteOrderItemById was called with the expected ID
-        Mockito.verify(orderItemService).deleteOrderItemById(1L); // Replace 1L with the desired ID
-
-        // Add assertions to compare the expected and actual results
-    //    assertEquals(HttpStatus.OK, result.getStatusCode());  // Replace with your expected status code
-        assertEquals(result.getBody(),"Success");  // Verify that the re
+        ResponseEntity result = orderItemController.deleteOrderItemById(1L);
+        Mockito.verify(orderItemService).deleteOrderItemById(1L);
+        assertEquals(result.getBody(),"\"Success\"");
 
 
     }

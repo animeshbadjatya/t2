@@ -111,7 +111,7 @@ public class ProductRepositoryTest {
 
         Optional<Product> productOptional = productRepository.findById(product.getId());
 
-        assertThat(productOptional).isNotNull();
+        assertThat(productOptional).isEmpty();
     }
 
 
